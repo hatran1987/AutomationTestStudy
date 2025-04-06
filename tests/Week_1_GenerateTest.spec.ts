@@ -26,7 +26,7 @@ test('test', async ({ page }) => {
   await page.getByText('Enabled').click();
   await page.getByRole('textbox', { name: 'Type for hints...' }).click();
   await page.getByRole('textbox', { name: 'Type for hints...' }).fill('a');
-  await page.getByText('Ranga  Akunuri').click();
+  await page.getByText('OrangeHRM  456').click();
   await page.getByRole('textbox').nth(2).click();
   await page.getByRole('textbox').nth(2).fill('HaTest');
   await page.getByRole('textbox').nth(3).click();
