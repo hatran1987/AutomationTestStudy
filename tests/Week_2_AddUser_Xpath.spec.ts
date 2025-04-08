@@ -251,7 +251,6 @@ test('Verify Password Field', async ({ page }) => {
   const Password_inputField = page.locator("//label[text()='Password']/../following-sibling::div//input");
   await Password_inputField.fill('');
   await page.locator("//button[@type='submit']").click();
-  await page.locator("//label[text()='Password']/../following-sibling::span").waitFor();
   const Password_errorMessage1 = await page.locator("//label[text()='Password']/../following-sibling::span").textContent();
   console.log('Show error message if Username is blank: ', Password_errorMessage1);
   expect(Password_errorMessage1).toBe('Required');
@@ -260,19 +259,25 @@ test('Verify Password Field', async ({ page }) => {
   await Password_inputField.clear();
   await Password_inputField.fill('123');
   await page.locator("//button[@type='submit']").click();
-  //await page.locator("//label[text()='Password']/../following-sibling::span").waitFor();
-  const Password_errorMessage2 = await page.locator("//label[text()='Password']/../following-sibling::span[@class='oxd-text oxd-text--span oxd-input-field-error-message oxd-input-group__message']").textContent();
+  const Password_errorMessage2 = await page.locator("//label[text()='Password']/../following-sibling::span").textContent();
   console.log('Show error message if Password is less than 7 characters: ', Password_errorMessage2);
   expect(Password_errorMessage2).toBe('Should have at least 7 characters');
 
   //Verify hiển thị thông báo lỗi nếu nhập > 64 ký tự
+  await Password_inputField.clear(); 
   await Password_inputField.fill('11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111');
   await page.locator("//button[@type='submit']").click();
-  await page.locator("//label[text()='Password']/../following-sibling::span").waitFor();
   const Password_errorMessage3 = await page.locator("//label[text()='Password']/../following-sibling::span").textContent();
   console.log('Show error message if Password is more then 64 characters: ', Password_errorMessage3);
   expect(Password_errorMessage3).toBe('Should not exceed 64 characters');
 
+  //Verify hiển thị thông báo lỗi nếu nhập > 64 ký tự
+  await Password_inputField.clear(); 
+  await Password_inputField.fill('1111111');
+  await page.locator("//button[@type='submit']").click();
+  const Password_errorMessage4 = await page.locator("//label[text()='Password']/../following-sibling::span").textContent();
+  console.log('Show error message if Password not contain minumun 1 lower-case letter: ', Password_errorMessage4);
+  expect(Password_errorMessage4).toBe('Your password must contain minimum 1 lower-case letter');
 });
 
 
