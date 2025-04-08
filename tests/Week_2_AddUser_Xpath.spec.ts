@@ -209,6 +209,73 @@ test('Verify Username Field', async ({ page }) => {
 
 });
 
+test('Verify Password Field', async ({ page }) => {
+
+  //Go to https://opensource-demo.orloginangehrmlive.com/web/index.php/auth/login
+  await page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+
+  // Login
+  //Input Username: Admin
+  await page.locator ("//input[@name='username']").click();
+  await page.locator ("//input[@name='username']").fill('Admin');
+ 
+  //Input Password: admin123
+  await page.locator ("//input[@name='password']").click();
+  await page.locator ("//input[@name='password']").fill('admin123');
+
+  //Click Login button
+  await page.locator ("//button[@type='submit']").click();
+ 
+  await page.waitForLoadState('load');
+      
+  //Go to Admin function
+  await page.locator("//a[contains(@href, 'viewAdminModule')]").isVisible();
+  await page.locator("//a[contains(@href, 'viewAdminModule')]").click();
+
+  //Add new user
+  //Click Add button
+  await page.waitForLoadState('load');
+
+  await page.locator("//button[normalize-space()='Add']").click();
+
+    //-- Username field---
+  //Verify label Username
+    await expect(page.locator("//label[text()='Username']")).toBeVisible();
+
+  //Verify default value của element có hỗ trợ inputValue()
+  const Password_defaultValue = await page.locator("//label[text()='Password']/../following-sibling::div//input").inputValue();
+  console.log('Default value of Password field:', Password_defaultValue);
+  expect(Password_defaultValue).toBe('');
+
+  //Verify hiển thị thông báo lỗi nếu để trống trường Username
+  const Password_inputField = page.locator("//label[text()='Password']/../following-sibling::div//input");
+  await Password_inputField.fill('');
+  await page.locator("//button[@type='submit']").click();
+  await page.locator("//label[text()='Password']/../following-sibling::span").waitFor();
+  const Password_errorMessage1 = await page.locator("//label[text()='Password']/../following-sibling::span").textContent();
+  console.log('Show error message if Username is blank: ', Password_errorMessage1);
+  expect(Password_errorMessage1).toBe('Required');
+
+  //Verify hiển thị thông báo lỗi nếu nhập < 7 ký tự
+  await Password_inputField.clear();
+  await Password_inputField.fill('123');
+  await page.locator("//button[@type='submit']").click();
+  //await page.locator("//label[text()='Password']/../following-sibling::span").waitFor();
+  const Password_errorMessage2 = await page.locator("//label[text()='Password']/../following-sibling::span[@class='oxd-text oxd-text--span oxd-input-field-error-message oxd-input-group__message']").textContent();
+  console.log('Show error message if Password is less than 7 characters: ', Password_errorMessage2);
+  expect(Password_errorMessage2).toBe('Should have at least 7 characters');
+
+  //Verify hiển thị thông báo lỗi nếu nhập > 64 ký tự
+  await Password_inputField.fill('11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111');
+  await page.locator("//button[@type='submit']").click();
+  await page.locator("//label[text()='Password']/../following-sibling::span").waitFor();
+  const Password_errorMessage3 = await page.locator("//label[text()='Password']/../following-sibling::span").textContent();
+  console.log('Show error message if Password is more then 64 characters: ', Password_errorMessage3);
+  expect(Password_errorMessage3).toBe('Should not exceed 64 characters');
+
+});
+
+
 test('Add New User Successfully', async ({ page }) => {
 
   //Go to https://opensource-demo.orloginangehrmlive.com/web/index.php/auth/login
