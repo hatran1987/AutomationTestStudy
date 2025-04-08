@@ -30,7 +30,7 @@ test('Add New User', async ({ page }) => {
 
   await page.locator("//button[normalize-space()='Add']").click();
 
-  //Test User Role field
+  //--- User Role field ---
   //Verify label User Role
   await expect(page.locator("//label[text()='User Role']")).toBeVisible();
   await page.waitForLoadState('load');
@@ -50,26 +50,27 @@ test('Add New User', async ({ page }) => {
     console.log(option + "\n");
   }
 
-  //select data for User Role field
-  //await page.locator("//label[text()='User Role']/../following-sibling::div//i").click();
-  //await page.waitForLoadState('load');
-
   // Click chọn item "ESS"
   await page.waitForTimeout (1000);
   await page.locator("//span[text()='ESS']").click();
-  await page.waitForTimeout (1000);
+  
+
+  //-- Employee Name field ---
+  //Verify label Employee Name
+  await expect(page.locator("//label[text()='Employee Name']")).toBeVisible();
+
+  // Verify placeholder text
+   const inputField = page.getByPlaceholder('Type for hints...');
+
+   // Kiểm tra xem placeholder có đúng như mong đợi không
+   await expect(inputField).toHaveAttribute('placeholder', 'Type for hints...');
 
   //Select data for Employee Name field
-  //await page.locator("//label[text()='Employee Name']/../following-sibling::div//input[@placeholder='Type for hints...']").click();
-  await page.locator("//input[@placeholder='Type for hints...']").fill('a');
-  await page.waitForLoadState('load');
-  //await page.locator("//div[@role='listbox']").isVisible();
-  await page.locator("//div[@role='option'][1]").click();
-  // await page.locator("//div[@role='listbox']").first().click();
+  await page.locator("//input[@placeholder='Type for hints...']").fill('b');
+  //await page.locator("//div[@class='oxd-autocomplete-text-input oxd-autocomplete-text-input--focus']").fill('a');
   //await page.waitForLoadState('load');
-  const Employee_listbox = page.locator('[role="listbox"]');
-  const Employee_options = listbox.locator('[role="option"]');
-  await Employee_options.first().click();
+  await page.locator("//div[@role='listbox']").isVisible();
+  await page.locator("//div[@role='option'][1]").click();
 
   //Select data for Status field
   await page.locator("//label[text()='Status']/../following-sibling::div//i").click();
