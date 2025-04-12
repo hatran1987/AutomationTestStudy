@@ -31,6 +31,30 @@ test.describe('Add New User Test Suite', () => {
     await addNewUserPage.verifyDropdown('User Role', ['Select', 'Admin', 'ESS']);
   })
 
+  test('Verify Employee Name field', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login('Admin', 'admin123');
+
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.isLoaded();
+    await dashboardPage.goToMenu('Admin');
+
+    const userListPage = new UserListPage(page);
+    await userListPage.isLoaded();
+    await userListPage.addButton.click();
+
+    const addNewUserPage = new AddUserPage(page);
+    await addNewUserPage.isLoaded();
+
+    //Verify Status = Blank
+    await addNewUserPage.getRequiredFieldErrorMessage('Employee Name').isVisible();
+
+    // Verify placeholder text
+    const inputField = page.getByPlaceholder('Type for hints...');
+    await expect(inputField).toHaveAttribute('placeholder', 'Type for hints...');
+})
+
   test('Verify Status field', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
@@ -52,6 +76,72 @@ test.describe('Add New User Test Suite', () => {
 
     //Verify Status list item
     await addNewUserPage.verifyDropdown('Status', ['Select', 'Enabled', 'Disabled']);
+})
+
+test('Verify Username field', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('Admin', 'admin123');
+
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.isLoaded();
+  await dashboardPage.goToMenu('Admin');
+
+  const userListPage = new UserListPage(page);
+  await userListPage.isLoaded();
+  await userListPage.addButton.click();
+
+  const addNewUserPage = new AddUserPage(page);
+  await addNewUserPage.isLoaded();
+
+  //Verify Password = Blank
+  await addNewUserPage.username.fill('111');
+  await addNewUserPage.getRequiredFieldErrorMessage('Username').isVisible();
+
+  //Verify hiển thị thông báo lỗi nếu nhập < 5 ký tự
+  await addNewUserPage.username.fill('111');
+  await addNewUserPage.getUsernameLessThanMinimumCharactersErrorMessage('Username').isVisible();
+
+  //Verify hiển thị thông báo lỗi nếu nhập > 60 ký tự
+  await addNewUserPage.username.fill('11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111');
+  await addNewUserPage.getUsernameOverMaximumCharactersErrorMessage('Username').isVisible();
+
+  //Verify hiển thị thông báo lỗi nếu Username đã tồn tại
+  await addNewUserPage.username.fill('Admin');
+  await addNewUserPage.getUserNameExistedErrorMessage('Username').isVisible();
+})
+
+test('Verify Password field', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('Admin', 'admin123');
+
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.isLoaded();
+  await dashboardPage.goToMenu('Admin');
+
+  const userListPage = new UserListPage(page);
+  await userListPage.isLoaded();
+  await userListPage.addButton.click();
+
+  const addNewUserPage = new AddUserPage(page);
+  await addNewUserPage.isLoaded();
+
+  //Verify Password = Blank
+  await addNewUserPage.password.fill('');
+  await addNewUserPage.getRequiredFieldErrorMessage('Password').isVisible();
+
+  //Verify hiển thị thông báo lỗi nếu nhập < 7 ký tự
+  await addNewUserPage.password.fill('111');
+  await addNewUserPage.get7RequiredCharactersErrorMessage('Password').isVisible();
+
+  //Verify hiển thị thông báo lỗi nếu nhập > 64 ký tự
+  await addNewUserPage.password.fill('11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111');
+  await addNewUserPage.get64MaximumCharactersErrorMessage('Password').isVisible();
+
+  //Verify hiển thị thông báo lỗi nếu Password không chứa lower-case
+  await addNewUserPage.password.fill('11111111');
+  await addNewUserPage.getLackLowerCharactersErrorMessage('Password').isVisible();
 })
 
   test('Verify Add New User successfully', async ({ page }) => {
