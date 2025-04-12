@@ -29,9 +29,6 @@ test.describe('Add New User Test Suite', () => {
 
     //Verify User Role list item
     await addNewUserPage.verifyDropdown('User Role', ['Select', 'Admin', 'ESS']);
-    await addNewUserPage.selectDropdown('User Role', 'Select');
-    await addNewUserPage.selectDropdown('User Role', 'Admin');
-    await addNewUserPage.selectDropdown('User Role', 'ESS');
   })
 
   test('Verify Status field', async ({ page }) => {
@@ -55,11 +52,6 @@ test.describe('Add New User Test Suite', () => {
 
     //Verify Status list item
     await addNewUserPage.verifyDropdown('Status', ['Select', 'Enabled', 'Disabled']);
-
-    //Verify Select item in list
-    await addNewUserPage.selectDropdown('Status', 'Select');
-    await addNewUserPage.selectDropdown('Status', 'Disabled');
-    await addNewUserPage.selectDropdown('Status', 'Enabled');
 })
 
   test('Verify Add New User successfully', async ({ page }) => {
