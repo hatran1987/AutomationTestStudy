@@ -43,6 +43,10 @@ export class UserListPage extends BasePage {
     return this.container.locator('.oxd-table-body.oxd-table-row');
   }
 
+  get DeleteButton() {
+    return this.container.locator("//div[@class='oxd-table']//div[text()='HaTest']/../following-sibling::div//i[@class='oxd-icon bi-trash']");
+  }
+
   getDropdown(labelText: string): Locator {
     return this.container.getByText(labelText)
       .locator('..').locator('..').locator('..')
@@ -117,9 +121,10 @@ export class UserListPage extends BasePage {
     const row = this.container.locator(
       `.oxd-table-body .oxd-table-row:has-text("${username}")`
     );
-    await expect(row.locator('div').nth(1)).toHaveText(username);
-    await expect(row.locator('div').nth(2)).toHaveText(userRole);
-    await expect(row.locator('div').nth(3)).toHaveText(employeeName);
-    await expect(row.locator('div').nth(4)).toHaveText(status);
+    await row.waitFor({ state: 'visible' });
+    await expect(row.locator('.oxd-table-cell').nth(1)).toHaveText(username);
+    await expect(row.locator('.oxd-table-cell').nth(2)).toHaveText(userRole);
+    await expect(row.locator('.oxd-table-cell').nth(3)).toHaveText(employeeName);
+    await expect(row.locator('.oxd-table-cell').nth(4)).toHaveText(status);
   }
 }

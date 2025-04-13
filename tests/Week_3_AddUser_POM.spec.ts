@@ -161,6 +161,31 @@ test('Verify Password field', async ({ page }) => {
   expect(Password_ErrorMessage).toBe('Your password must contain minimum 1 lower-case letter');
 })
 
+test('Verify Confirm Password field', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login('Admin', 'admin123');
+
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.isLoaded();
+  await dashboardPage.goToMenu('Admin');
+
+  const userListPage = new UserListPage(page);
+  await userListPage.isLoaded();
+  await userListPage.addButton.click();
+
+  const addNewUserPage = new AddUserPage(page);
+  await addNewUserPage.isLoaded();
+
+  //Verify Confirm Password NOT match with Password
+  await addNewUserPage.password.fill('');
+  await addNewUserPage.confirmPassword.fill('');
+  await addNewUserPage.saveButton.click();
+  await addNewUserPage.getErrorMessage('Confirm Password').isVisible();
+  let ConfirmPassword_ErrorMessage = await addNewUserPage.getErrorMessage('Confirm Password').textContent();
+  expect(ConfirmPassword_ErrorMessage).toBe('Passwords do not match');
+})
+
   test('Verify Add New User successfully', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
@@ -183,7 +208,7 @@ test('Verify Password field', async ({ page }) => {
     await addNewUserPage.password.fill('HaTest@123');
     await addNewUserPage.confirmPassword.fill('HaTest@123');
     await addNewUserPage.saveButton.click();
-    await addNewUserPage.getRequiredFieldErrorMessage('User Role').isVisible();
+    await addNewUserPage.getErrorMessage('User Role').isVisible();
 
     //Verify Successful message
     await expect(page.getByText('Successfully Saved')).toBeVisible();
@@ -210,6 +235,10 @@ test('Verify Password field', async ({ page }) => {
    
     await userListPage.username.fill('HaTest');
     await userListPage.searchButton.click();
+
+    await userListPage.verifyUserInTable('HaTest','ESS','Christine Jennings','Enabled');
+    await userListPage.DeleteButton.click();
+    await page.locator("//button[normalize-space()='Yes, Delete']/..//button[normalize-space()='Yes, Delete']").click();
   })
 
 })  
