@@ -62,63 +62,14 @@ export class AddUserPage extends BasePage {
         .first();
   }
 
-  getUsernameLessThanMinimumCharactersErrorMessage(labelText: string): Locator {
+  getErrorMessage(labelText: string): Locator {
     return this.container.getByText(labelText)
-      .locator('..').locator('..').locator('..')
-      .getByText('Should be at least 5 characters')
-      .first();
+    .locator('..').locator('..').locator('span')
+
+      // .getByText('Should be at least 5 characters')
+     .first();
   }
 
-  getUsernameOverMaximumCharactersErrorMessage(labelText: string): Locator {
-    return this.container.getByText(labelText)
-      .locator('..').locator('..').locator('..')
-      .getByText('Should not exceed 40 characters')
-      .first();
-  }
-
-  getUserNameExistedErrorMessage(labelText: string): Locator {
-    return this.container.getByText(labelText)
-      .locator('..').locator('..').locator('..')
-      .getByText('Already exists')
-      .first();
-  }
-
-  getRequiredFieldErrorMessage(labelText: string): Locator {
-    return this.container.getByText(labelText)
-      .locator('..').locator('..').locator('..')
-      .getByText('Required')
-      .first();
-  }
-
-  get5RequiredCharactersErrorMessage(labelText: string): Locator {
-    return this.container.getByText(labelText)
-      .locator('..').locator('..').locator('..')
-      .getByText('Should be at least 5 characters')
-      .first();
-  }
-
-  get7RequiredCharactersErrorMessage(labelText: string): Locator {
-    return this.container.getByText(labelText)
-      .locator('..').locator('..').locator('..')
-      .getByText('Should have at least 7 characters')
-      .first();
-  }
-
-  get64MaximumCharactersErrorMessage(labelText: string): Locator {
-    return this.container.getByText(labelText)
-      .locator('..').locator('..').locator('..')
-      .getByText('Should not exceed 64 characters')
-      .first();
-  }
-
- 
-
-  getLackLowerCharactersErrorMessage(labelText: string): Locator {
-    return this.container.getByText(labelText)
-      .locator('..').locator('..').locator('..')
-      .getByText('Your password must contain minimum 1 lower-case letter')
-      .first();
-  }
 
   getSuccessMessage(labelText: string): Locator {
     return this.container.getByText('Successfully Saved').first();

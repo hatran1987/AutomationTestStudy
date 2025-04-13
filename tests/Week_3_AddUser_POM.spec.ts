@@ -25,7 +25,7 @@ test.describe('Add New User Test Suite', () => {
     await addNewUserPage.isLoaded();
 
     //Verify User Role = Blank
-    await addNewUserPage.getRequiredFieldErrorMessage('User Role').isVisible();
+    await addNewUserPage.getErrorMessage('User Role').isVisible();
 
     //Verify User Role list item
     await addNewUserPage.verifyDropdown('User Role', ['Select', 'Admin', 'ESS']);
@@ -48,7 +48,7 @@ test.describe('Add New User Test Suite', () => {
     await addNewUserPage.isLoaded();
 
     //Verify Status = Blank
-    await addNewUserPage.getRequiredFieldErrorMessage('Employee Name').isVisible();
+    await addNewUserPage.getErrorMessage('Employee Name').isVisible();
 
     // Verify placeholder text
     const inputField = page.getByPlaceholder('Type for hints...');
@@ -72,7 +72,7 @@ test.describe('Add New User Test Suite', () => {
     await addNewUserPage.isLoaded();
 
     //Verify Status = Blank
-    await addNewUserPage.getRequiredFieldErrorMessage('Status').isVisible();
+    await addNewUserPage.getErrorMessage('Status').isVisible();
 
     //Verify Status list item
     await addNewUserPage.verifyDropdown('Status', ['Select', 'Enabled', 'Disabled']);
@@ -94,21 +94,29 @@ test('Verify Username field', async ({ page }) => {
   const addNewUserPage = new AddUserPage(page);
   await addNewUserPage.isLoaded();
 
-  //Verify Password = Blank
-  await addNewUserPage.username.fill('111');
-  await addNewUserPage.getRequiredFieldErrorMessage('Username').isVisible();
+  //Verify Username = Blank
+  await addNewUserPage.username.fill('');
+  await addNewUserPage.saveButton.click();
+  await addNewUserPage.getErrorMessage('Username').isVisible();
+  let Username_ErrorMessage = await addNewUserPage.getErrorMessage('Username').textContent();
+  expect(Username_ErrorMessage).toBe('Required');
 
   //Verify hiển thị thông báo lỗi nếu nhập < 5 ký tự
   await addNewUserPage.username.fill('111');
-  await addNewUserPage.getUsernameLessThanMinimumCharactersErrorMessage('Username').isVisible();
+  Username_ErrorMessage = await addNewUserPage.getErrorMessage('Username').textContent();
+  expect(Username_ErrorMessage).toBe('Should be at least 5 characters');
 
-  //Verify hiển thị thông báo lỗi nếu nhập > 60 ký tự
+  //Verify hiển thị thông báo lỗi nếu nhập > 40 ký tự
   await addNewUserPage.username.fill('11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111');
-  await addNewUserPage.getUsernameOverMaximumCharactersErrorMessage('Username').isVisible();
+  Username_ErrorMessage = await addNewUserPage.getErrorMessage('Username').textContent();
+  expect(Username_ErrorMessage).toBe('Should not exceed 40 characters');
 
   //Verify hiển thị thông báo lỗi nếu Username đã tồn tại
   await addNewUserPage.username.fill('Admin');
-  await addNewUserPage.getUserNameExistedErrorMessage('Username').isVisible();
+  await page.waitForTimeout(2000);
+  Username_ErrorMessage = await addNewUserPage.getErrorMessage('Username').textContent();
+  await page.waitForTimeout(2000);
+  expect(Username_ErrorMessage).toBe('Already exists');
 })
 
 test('Verify Password field', async ({ page }) => {
@@ -129,19 +137,28 @@ test('Verify Password field', async ({ page }) => {
 
   //Verify Password = Blank
   await addNewUserPage.password.fill('');
-  await addNewUserPage.getRequiredFieldErrorMessage('Password').isVisible();
+  await addNewUserPage.saveButton.click();
+  await addNewUserPage.getErrorMessage('Password').isVisible();
+  let Password_ErrorMessage = await addNewUserPage.getErrorMessage('Password').textContent();
+  expect(Password_ErrorMessage).toBe('Required');
 
   //Verify hiển thị thông báo lỗi nếu nhập < 7 ký tự
-  await addNewUserPage.password.fill('111');
-  await addNewUserPage.get7RequiredCharactersErrorMessage('Password').isVisible();
-
+  await addNewUserPage.password.fill('1');
+  await page.waitForTimeout(2000);
+  Password_ErrorMessage = await addNewUserPage.getErrorMessage('Password').textContent();
+  expect(Password_ErrorMessage).toBe('Should have at least 7 characters');
+  
   //Verify hiển thị thông báo lỗi nếu nhập > 64 ký tự
   await addNewUserPage.password.fill('11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111');
-  await addNewUserPage.get64MaximumCharactersErrorMessage('Password').isVisible();
+  await page.waitForTimeout(2000);
+  Password_ErrorMessage = await addNewUserPage.getErrorMessage('Password').textContent();
+  expect(Password_ErrorMessage).toBe('Should not exceed 64 characters');
 
   //Verify hiển thị thông báo lỗi nếu Password không chứa lower-case
   await addNewUserPage.password.fill('11111111');
-  await addNewUserPage.getLackLowerCharactersErrorMessage('Password').isVisible();
+  await page.waitForTimeout(3000);
+  Password_ErrorMessage = await addNewUserPage.getErrorMessage('Password').textContent();
+  expect(Password_ErrorMessage).toBe('Your password must contain minimum 1 lower-case letter');
 })
 
   test('Verify Add New User successfully', async ({ page }) => {
