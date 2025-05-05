@@ -2,6 +2,7 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class UserListPage extends BasePage {
+
   constructor(page: Page) {
     super(page);
   }
@@ -40,11 +41,7 @@ export class UserListPage extends BasePage {
   }
 
   get userTableRows() {
-    return this.container.locator('.oxd-table-body.oxd-table-row');
-  }
-
-  get DeleteButton() {
-    return this.container.locator("//div[@class='oxd-table']//div[text()='HaTest']/../following-sibling::div//i[@class='oxd-icon bi-trash']");
+    return this.container.locator('.oxd-table-body .oxd-table-row');
   }
 
   getDropdown(labelText: string): Locator {
@@ -109,6 +106,11 @@ export class UserListPage extends BasePage {
     await this.verifyModuleTitle('Admin');
     await this.verifyPageTitle('/ User Management');
   }
+
+  async userListScreenshot() {
+    await expect(this.container).toHaveScreenshot('userList.png',{
+      mask: [this.page.locator('div.oxd-table-body'), this.headerbar.container]});
+  }
   
   async clickEditButtonFor(username: string) {
     const row = this.container.locator(
@@ -116,6 +118,18 @@ export class UserListPage extends BasePage {
     );
     await row.locator('i.bi-pencil-fill').click();
   }
+
+  async clickDeleteButtonFor(username: string) {
+    const row = this.container.locator(
+      `.oxd-table-body .oxd-table-row:has-text("${username}")`
+    );
+    await row.locator('i.bi-trash').click();
+
+    const yesDeleteButton = this.container.locator("//button[normalize-space()='Yes, Delete']/..//button[normalize-space()='Yes, Delete']");
+    await yesDeleteButton.waitFor({ state: 'visible', timeout: 60000 });
+    await yesDeleteButton.click()
+  }
+
 
   async verifyUserInTable(username: string, userRole: string, employeeName: string, status: string) {
     const row = this.container.locator(
@@ -126,5 +140,9 @@ export class UserListPage extends BasePage {
     await expect(row.locator('.oxd-table-cell').nth(2)).toHaveText(userRole);
     await expect(row.locator('.oxd-table-cell').nth(3)).toHaveText(employeeName);
     await expect(row.locator('.oxd-table-cell').nth(4)).toHaveText(status);
+  }
+
+  async verifyFooter() {
+    await this.verifyFooter();
   }
 }

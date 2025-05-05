@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Run Playwright tests
-      run: npx playwright test Week_3
+      run: npx playwright test fixtures.AddUserPageWeek4.spec.ts
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:

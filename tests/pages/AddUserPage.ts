@@ -51,7 +51,10 @@ export class AddUserPage extends BasePage {
   }
 
   async selectEmployeeName(nameText: string) {
+    await this.getEmployeeName(nameText).clear();
     await this.getEmployeeName(nameText).fill(nameText);
+
+    await this.page.waitForTimeout(1000);
     await this.getEmployeeNameOption(nameText).click();
   }
   
@@ -71,8 +74,12 @@ export class AddUserPage extends BasePage {
   }
 
 
-  getSuccessMessage(labelText: string): Locator {
+  getSuccessMessage(): Locator {
     return this.container.getByText('Successfully Saved').first();
+  }
+
+  getByPlaceholder(labelText: string): Locator {
+    return this.container.getByPlaceholder('Type for hints...');
   }
 
   async selectDropdown(labelText: string, option:string) {
@@ -122,5 +129,12 @@ export class AddUserPage extends BasePage {
     await this.container.waitFor({ state: 'visible' });
     await this.verifyModuleTitle('Admin');
     await this.headingAddUser.waitFor({ state: 'visible' });
+  }
+
+  getRequiredFieldErrorMessage(labelText: string): Locator {
+    return this.container.getByText(labelText)
+      .locator('..').locator('..').locator('..')
+      .getByText('Required')
+      .first();
   }
 }
